@@ -1,0 +1,589 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 11 February 2007), see www.w3.org">
+  <style type="text/css">
+    /* Color scheme stolen from Sergey Karayev */
+    
+    a {
+      color: #1772d0;
+      text-decoration: none;
+    }
+    
+    a:focus,
+    a:hover {
+      color: #f09228;
+      text-decoration: none;
+    }
+    
+    body,
+    td,
+    th,
+    tr,
+    p,
+    a {
+      font-family: 'Vollkorn', Georgia, Times, serif;
+      font-size: 14px
+    }
+    
+    strong {
+      font-family: 'Vollkorn', Georgia, Times, serif;
+      font-size: 16px;
+    }
+    
+    heading {
+      font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      font-size: 22px;
+    }
+    
+    papertitle {
+      font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 700
+    }
+    
+    name {
+      font-family: 'Lato', Verdana, Helvetica, sans-serif;
+      font-size: 30px;
+    }
+    
+    .one {
+      width: 160px;
+      height: 160px;
+      position: relative;
+    }
+    
+    .two {
+      width: 160px;
+      height: 160px;
+      position: absolute;
+      transition: opacity .2s ease-in-out;
+      -moz-transition: opacity .2s ease-in-out;
+      -webkit-transition: opacity .2s ease-in-out;
+    }
+    
+    .fade {
+      transition: opacity .2s ease-in-out;
+      -moz-transition: opacity .2s ease-in-out;
+      -webkit-transition: opacity .2s ease-in-out;
+    }
+    
+    span.highlight {
+      background-color: #ffffd0;
+    }
+
+    #images {
+    display: flex;
+    justify-content: center;
+    }
+
+    figure {
+    text-align: center;
+    }
+
+    #videoal {
+    margin: 30px 0px 0px 20px;
+    }
+
+    #videoal div.video {
+    display: inline-block;
+    zoom: 1;
+    *display: inline;
+    width: 300px;
+    height: 350px;
+    margin: 0 10px 10px 0;
+    }
+
+    #videoal div.video video {
+    width: 100%;
+    height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+<table width="800" border="0" align="center" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+          <tr>
+            <td width="67%" valign="middle">
+              <p align="center">
+                <name> Framework of Repetitive Path Planning and Control for UR5 Manipulator</name>
+              </p>
+              <br>
+              <p align="center" style="font-size: 16px">Gautami Golani |
+                Control & Simulation Lab |
+                National University of Singapore 
+            </p>
+
+            <br>
+            </td>
+          </tr>
+        </table>
+        <center>
+        Jump to:
+        <a href="#kine">Kinematic Model & Planning Scheme</a> &nbsp|&nbsp
+        <a href="#dync">Dynamic Model & Controller</a> &nbsp|&nbsp
+        <a href="#manp">Manipulator Model</a> &nbsp|&nbsp
+        <a href="#comb">Combined Framework</a> &nbsp|&nbsp
+        <a href="#simr">Simulations & Results</a> &nbsp|&nbsp
+        <a href="#conc">Conclusion</a> &nbsp|&nbsp
+        <a href="#ackn">Acknowledgement</a> &nbsp|&nbsp
+        <a href="#refs">References</a> &nbsp|&nbsp
+        <a href="#code">Code</a>
+        </center>
+<br>
+<br>
+
+<table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>Abstract</u></heading>
+        <p align="justify"> For the past few years, manipulators have been used for a number of different applications mainly 
+            due to their cost-effectiveness and flexibility, apart from other numerous advantages they offer.  
+            With the thought of exploring manipulators in detail, I have developed a complete path planning and control framework 
+            for a manipulator in this project, giving an insight into the area of planning for the UR5 manipulator (case study). The kinematic 
+            equations are first derived, following which the computed-torque controller is designed with the help of the dynamic 
+            equations. For path planning, a repetitive motion planning (RMP) scheme is analyzed and implemented on the manipulator. 
+            The models for the same are developed in Simulink while Simscape Multibody presents a new way of visualizing the model 
+            and observing its movement. Simulations are carried out at a later stage to verify whether the results obtained have 
+            substantiated the planning model or not.
+        </p>
+      </td>
+    </tr>
+  </table>
+  <br>
+        
+  <span id="kine">
+  <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>Kinematic Model & Planning Scheme</u></heading>
+        <p align="justify"> In general, there are a number of path planning schemes available for manipulators, but here the focus will 
+            be on the RMP scheme.</p>
+        <p align="justify"> By using the differential kinematic equation stated below, the path planning model for 
+            the robotic manipulator can be modeled.
+            <center>
+                <img src="https://latex.codecogs.com/svg.latex?r_{d}&space;=&space;f(\theta)" title="r_{d} = f(\theta)" />
+            </center>
+            <br>
+            where <img src="https://latex.codecogs.com/svg.latex?\small&space;r_{d}\in&space;R^m" title="\small r_{d}\in R^m" /> is the 
+            task coordinate and <img src="https://latex.codecogs.com/svg.latex?\small&space;f(\theta)\in&space;R^n" title="\small f(\theta)\in R^n" /> 
+            is the joint coordinate, respectively.</p>
+        <p align="justify"> Differentiating the above equation w.r.t time,
+            <br> 
+            <center>
+            <img src="https://latex.codecogs.com/svg.latex?\dot{r_{d}}&space;=&space;J(\theta)\dot{\theta}" title="\dot{r_{d}} = J(\theta)\dot{\theta}" />
+            </center>
+            <br>
+            where <img src="https://latex.codecogs.com/svg.latex?\small&space;J(\theta):R^n-R^m" title="\small J(\theta):R^n-R^m" /> is the 
+            Jacobian matrix.</p>
+        <p align="justify"> Often, manipulators are faced with the problem of redundancy, where <img src="https://latex.codecogs.com/svg.latex?\small&space;n>m" title="\small n>m" /> 
+            (referring to eqn. 2 - the Jacobian matrix has more columns than rows) and there exist infinite solutions for the joint velocities 
+            at a given <img src="https://latex.codecogs.com/svg.latex?\dot{r_{d}}" title="\dot{r_{d}}" />. 
+            [Here, <img src="https://latex.codecogs.com/svg.latex?\small&space;n=6" title="\small n=6" /> and 
+            <img src="https://latex.codecogs.com/svg.latex?\small&space;m=3" title="\small m=3" /> for the UR5 manipulator]</p>
+        <p align="justify"> For path planning, the pseudo-inverse based Repetitive Motion Planning scheme (RMP) has been developed and implemented, 
+            in which the joint and task coordinate, <img src="https://latex.codecogs.com/svg.latex?${\theta}$" title="${\theta}$" /> 
+            and <img src="https://latex.codecogs.com/svg.latex?$r_{d}$" title="$r_{d}$" />, are used to compute the joint velocity 
+            <img src="https://latex.codecogs.com/svg.latex?\dot{\theta}" title="\dot{\theta}" />. It's mathematical form is given as,
+            <br>
+            <br>
+            <center>
+            <img src="https://latex.codecogs.com/svg.latex?\dot{\theta}=J^{\dagger}{\dot{r_{d}}}&plus;(I-J^{\dagger}J)c" title="\dot{\theta}=J^{\dagger}{\dot{r_{d}}}+(I-J^{\dagger}J)c" />
+            </center>
+            <br>
+            <br>
+            where <img src="https://latex.codecogs.com/svg.latex?\small&space;c={\gamma}({\theta_0}-{\theta})" title="\small c={\gamma}({\theta_0}-{\theta})" /> 
+            , <img src="https://latex.codecogs.com/svg.latex?\small&space;J^{\dagger}=J^T(JJ^T)^{-1}" title="\small J^{\dagger}=J^T(JJ^T)^{-1}" /> 
+            is the Moore-Penrose pseudo-inverse of the Jacobian matrix and <img src="https://latex.codecogs.com/svg.latex?\small&space;I" title="\small I" /> 
+            denotes the identity matrix.</p>
+        <p align="justify"> Adding feedback changes the form of the scheme as,
+            <br>
+            <br>
+            <center>
+            <img src="https://latex.codecogs.com/svg.latex?\dot{\theta}=J^{\dagger}{\dot{r_{d}}}&plus;(I-J^{\dagger}J)c" title="\dot{\theta}=J^{\dagger}{\dot{r_{d}}}+(I-J^{\dagger}J)c" />
+            </center>
+            <br>
+            <br>
+            where <img src="https://latex.codecogs.com/svg.latex?${\kappa}>0$" title="${\kappa}>0$" /> is the feedback gain. This completes
+            the development of the scheme used in the project. 
+            <br>
+            <br>        
+            <br>
+            <center>
+                <img src="images/ITimgs/fig2.png" alt="Flying Kites" style="width: 650px; height: 450px;">
+                <br>
+                <br>
+                <figcaption>Fig. 2: SIMULINK model of the Kinematics & Path Planning subsystem</figcaption>
+            </center>
+        </p>
+      </td>
+    </tr>
+  </table>
+</span>
+<br>
+<br>
+
+<span id="dync">
+  <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>Dynamic Model & Controller</u></heading>
+        <p align="justify"> The general form of the dynamic equation is given as,
+            <br>
+            <br>
+            <center>
+            <img src="https://latex.codecogs.com/svg.latex?D(q)\ddot{q}&plus;C(q,\dot{q})\dot{q}&plus;g(q)&space;=&space;\tau" title="D(q)\ddot{q}+C(q,\dot{q})\dot{q}+g(q) = \tau" />
+            </center>
+            <br>
+            <br>
+            where <img src="https://latex.codecogs.com/svg.latex?q" title="q" /> refers to the joint angles, <img src="https://latex.codecogs.com/svg.latex?$\tau$" title="$\tau$" /> 
+            is the joint torque vector, <img src="https://latex.codecogs.com/svg.latex?\small&space;D(q)" title="\small D(q)" /> is the non-singular inertia 
+            matrix, <img src="https://latex.codecogs.com/svg.latex?\small&space;C(q,\dot{q})" title="\small C(q,\dot{q})" /> is the Coriolis and Centrifugal force 
+            matrix and <img src="https://latex.codecogs.com/svg.latex?g(q)" title="g(q)" /> is the Gravity vector.</p>
+        <p align="justify"> The manipulator is described by the dynamic equation stated above, and it is controlled by the law given below 
+            which ensures that the manipulator reaches the goal position. 
+            This is the computed-torque controller which can also be known as the PD-plus gravity controller.
+            <br>
+            <br>
+            <center>
+            <img src="https://latex.codecogs.com/svg.latex?\tau=K_pe&plus;K_v{\dot{e}}&plus;G(q)" title="\tau=K_pe+K_v{\dot{e}}+G(q)" />
+            </center>
+            <br>
+            <br>
+            where <img src="https://latex.codecogs.com/svg.latex?\small&space;K_p,K_v>0" title="\small K_p,K_v>0" /> are the proportional and 
+            derivative gains, <img src="https://latex.codecogs.com/svg.latex?\small&space;e=q_{d}-q" title="\small e=q_{d}-q" /> is the position 
+            error, and <img src="https://latex.codecogs.com/svg.latex?\small&space;G(q)" title="\small G(q)" /> is the gravity vector.</p>
+        <p align="justify"> When the control law is applied, the dynamic equation becomes,
+            <br>
+            <br>
+            <center>
+            <img src="https://latex.codecogs.com/svg.latex?D(q)\ddot{q}&plus;C(q,\dot{q})\dot{q}&plus;K_pe&plus;K_v{\dot{e}}&space;=&space;0" title="D(q)\ddot{q}+C(q,\dot{q})\dot{q}+K_pe+K_v{\dot{e}} = 0" />
+            </center>
+            <br>
+            <br>
+            The stability achieved by the controller can be analyzed according to this closed-loop equation.</p>
+        <p align="justify"> Finally, based on the above equations we get the following,
+            <br>
+            <br>
+            <center>
+            <img src="https://latex.codecogs.com/svg.latex?\ddot{\theta}=D^{-1}(\tau-C{\dot{q}}-G)" title="\ddot{\theta}=D^{-1}(\tau-C{\dot{q}}-G)" />
+            <br>
+            <br>
+            </center>
+            <br>
+            <br>
+            <br>
+            <center>
+                <img src="images/ITimgs/fig3.png" alt="Flying Kites" style="width: 780px; height: 380px;">
+                <figcaption>Fig. 3: SIMULINK model of the Dynamics & Controller subsystem</figcaption>
+            </center>
+        </p>
+      </td>
+    </tr>
+  </table>
+</span>
+
+<span id="manp">
+  <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>Manipulator Model</u></heading>
+        <p align="justify"> The CAD parts of the manipulator are assemebled in Solidworks to allow for its revolute movement. 
+            The developed CAD model is then exported from Solidworks into Simulink by utilizing the add-on named 'Simscape Multibody 
+            Link' in Solidworks. Further, the visualization of the model is observed in the 
+            SimMechanics explorer, with the complete robot model shown in Fig. 5.
+            <br>
+            <br>
+            <br>
+            <center>
+            <img src="images/ITimgs/fig1.jpg" alt="Flying Kites" style="width: 300px; height: 300px;">
+            <br>
+            <figcaption>Fig. 4: CAD model of the UR5 manipulator</figcaption>
+            </center>
+            <br>
+            <center>
+                <img src="images/ITimgs/fig4.png" alt="Flying Kites" style="width: 900px; height: 280px;">
+                <figcaption>Fig. 5: Simscape Multibody model of the UR5 manipulator</figcaption>
+            </center>
+        </p>
+      </td>
+    </tr>
+  </table>
+</span>
+<br>
+<br>
+
+<span id="comb">
+  <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>Combined Framework</u></heading>
+        <p align="justify"> The kinematics & path planning subsystem along with the controller subsystem are
+            combined with the robot model in Simulink to create the desired framework for the UR5 manipulator,
+            as shown in Fig.6. This framework is used to perform simulations and observe its results in the
+            SimMechanics explorer after which an analysis can be done. 
+            <br>
+            <br>
+            <center>
+                <img src="images/ITimgs/fig7.png" alt="Flying Kites" style="width: 450px; height: 130px;">
+                <br>
+                <br>
+                <figcaption>Fig. 6: Combined framework model in Simulink</figcaption>
+            </center>
+        </p>
+      </td>
+    </tr>
+  </table>
+</span>
+<br>
+<br>
+
+<span id="simr">
+  <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>Simulations and Results</u></heading>
+        <p align="justify"> Here, the simulation results are 
+            presented to verify the scheme. The RMP scheme with 2 paths – Rhodena and Tricuspid, are assigned to the manipulator and 
+            simulations of each are performed. These are visualized in the SimMechanics explorer and the results generated are plotted 
+            and described below. 
+        </p>
+        <p align="justify"> Figs. 8(a) and 9(a) show the desired path to be followed by the manipulator while figs. 8(b) and 9(b) show 
+            that this has been successfully achieved with the actual path. The error of the planning model is shown in figs. 8(c) and 
+            9(c), where the maximum tracking error is <img src="https://latex.codecogs.com/svg.latex?\small&space;8.352\times10^{-4}" title="\small 8.352\times10^{-4}" /> 
+            metres for the rhodena path and <img src="https://latex.codecogs.com/svg.latex?\small&space;7.143\times10^-4" title="\small 7.143\times10^-4" /> 
+            metres for the tricuspid path. The manipulator’s joint angles can be seen in figs. 8(d) and 9(d) while the converging tracking error is 
+            presented in figs. 8(e) and 9(e). The gains are set accordingly to make sure that the error is as small as possible and that no 
+            issue of divergence exists. The last two figures, 8(f) and 9(f), show the joint angles of the manipulator.
+            An important point that must be followed for the RMP scheme to be successful is that all the parameters being observed 
+            must return to their initial states upon completion of the task. It is quite evident from the figures that this criteria has been achieved.
+            To conclude, the results presented verify that the scheme is successful in achieving repetitive motion and it also substantiates 
+            the correctness and effectiveness of the model developed.
+        </p> 
+        <br>
+        <strong><li style="font-size: 14px">Results obtained for the Rhodena path</li></strong>
+        <div id="images">
+            <figure>
+                <img src="images/ITimgs/fig8d.png" width="250" height="210" alt="">
+                <br>
+                <br>
+                <figcaption>7(a): Desired path planning trajectory</figcaption>
+            </figure>
+            <figure>
+                <img src="images/ITimgs/fig8a.png" width="250" height="210" alt="">
+                <br>
+                <br>
+                <figcaption>7(b): Actual trajectory</figcaption>
+            </figure>
+        </div>
+        <br>
+        <div id="images">
+            <figure>
+                <img src="images/ITimgs/fig8e.png" width="270" height="200" alt="">
+                <br>
+                <br>
+                <figcaption>7(c): Path planning error</figcaption>
+            </figure>
+            <figure>
+                <img src="images/ITimgs/fig8f.png" width="270" height="200" alt="">
+                <br>
+                <br>
+                <figcaption>7(d): Joint angles</figcaption>
+            </figure>
+        </div>
+        <br>
+        <div id="images">
+            <figure>
+                <img src="images/ITimgs/fig8b.png" width="270" height="200" alt="">
+                <br>
+                <br>
+                <figcaption>7(e): Controller error</figcaption>
+            </figure>
+            <figure>
+                <img src="images/ITimgs/fig8c.png" width="270" height="200" alt="">
+                <br>
+                <br>
+                <figcaption>7(f): Joint angles from the controller</figcaption>
+            </figure>
+        </div>
+        <center>
+            <figcaption>Fig. 7: Simulation results of UR5 tracking the Rhodena path under the RMP scheme</figcaption>
+        </center>
+        <br>
+        <br>
+
+        <strong><li style="font-size: 14px">Results obtained for the Tricuspid path</li></strong>
+        <div id="images">
+            <figure>
+                <img src="images/ITimgs/fig9d.png" width="250" height="210" alt="">
+                <br>
+                <br>
+                <figcaption>8(a): Desired path planning trajectory</figcaption>
+            </figure>
+            <figure>
+                <img src="images/ITimgs/fig9a.png" width="250" height="210" alt="">
+                <br>
+                <br>
+                <figcaption>8(b): Actual trajectory</figcaption>
+            </figure>
+        </div>
+        <br>
+        <div id="images">
+            <figure>
+                <img src="images/ITimgs/fig9e.png" width="270" height="200" alt="">
+                <br>
+                <br>
+                <figcaption>8(c): Path planning error</figcaption>
+            </figure>
+            <figure>
+                <img src="images/ITimgs/fig9f.png" width="270" height="200" alt="">
+                <br>
+                <br>
+                <figcaption>8(d): Joint angles</figcaption>
+            </figure>
+        </div>
+        <br>
+        <div id="images">
+            <figure>
+                <img src="images/ITimgs/fig9b.png" width="270" height="200" alt="">
+                <br>
+                <br>
+                <figcaption>8(e): Controller error</figcaption>
+            </figure>
+            <figure>
+                <img src="images/ITimgs/fig9c.png" width="270" height="200" alt="">
+                <br>
+                <br>
+                <figcaption>8(f): Joint angles from the controller</figcaption>
+            </figure>
+        </div>
+        <center>
+            <figcaption>Fig. 8: Simulation results of UR5 tracking the Tricuspid path under the RMP scheme</figcaption>
+        </center>
+      </td>
+    </tr>
+  </table>
+</span>
+<br>
+
+<strong><li style="font-size: 14px">Visualization of the UR5 before and after the implementation of the scheme and controller</li></strong>
+<center>
+<div id="videoal">
+    <div class="video">
+        <video controls>
+            <source src="images/ITimgs/ur_bef_cont.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video">
+       <video controls>
+           <source src="images/ITimgs/ur_aft_cont.mp4" type="video/mp4">
+       </video>
+    </div>
+</div>
+</center>
+<br>
+<br>
+
+  <span id="conc">
+  <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>Conclusion</u></heading>
+        <p align="justify"> I have presented a path planning and control framework for Universal Robot’s UR5 manipulator. 
+            The initial steps are comprised of designing the CAD model and obtaining its kinematic and dynamic equations along 
+            with development of the scheme. A computed-torque controller is then implemented, with the corresponding values fed to each 
+            manipulator joint as the input for simulating its movement. The results generated for different paths 
+            have been presented and analyzed to show the effectiveness of the designed model and scheme. Overall, this project 
+            gives a general idea about the topic of path planning and control for manipulators and it can be explored in detail to solve various 
+            challenging tasks associated with robot manipulators, some of which include singularity or obstacle avoidance.
+        </p>
+    </td>
+  </tr>
+</table>
+</span>
+
+
+<span id="ackn">
+<table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>Acknowledgement</u></heading>
+        <p align="justify"> I am deeply grateful to my supervisor, <a href="https://www.eng.nus.edu.sg/ece/staff/ge-shuzhi-sam/">Prof. Sam Shuzhi Ge</a>, for his invaluable advice and expertise which helped me immensely during the course of this project.
+            I would also like to thank <a href="https://scholar.google.com/citations?user=Thioct4AAAAJ&hl=en">Dongsheng Guo</a> for introducing me to this area in Robotics, sharing his knowledge and answering the many questions I had with utmost patience throughout the project journey.         
+        </p>
+      </td>
+    </tr>
+  </table>
+</span>
+<br>
+
+<span id="code">
+    <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+        <tr>
+          <td width="100%" valign="middle">
+            <heading><u>Code</u></heading>
+            <p align="justify"> The code for this project will be uploaded soon.  
+            </p>
+          </td>
+        </tr>
+      </table>
+    </span>
+<br>
+
+<span id="refs">
+  <table width="100%" align="center" border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td width="100%" valign="middle">
+        <heading><u>References</u></heading>
+        <ol align="justify"> 
+            <li>https://www.universal-robots.com/</li>
+            <li>W. Khalil and E. Dombre, Modeling, Identification and Control of Robots, Elsevier, 2004.</li>
+            <li>J. J. Craig, Introduction to Robotics: Mechanics and Control, Pearson/Prentice Hall Upper Saddle
+            River, NJ, 2005.</li>
+            <li>M. W. Spong, S. Hutchinson, and M. Vidyasagar, Robotics, Dynamics and Control, John Wiley &
+            Sons, NY, 2005.</li>
+            <li>B. Siciliano, L. Sciavicco, L. Villani, and G. Oriolo, Robotics: Modeling, Planning and Control,
+            Springer-Verlag, London, 2009.</li>
+            <li>F. L. Lewis, D. M. Dawson, C. T. Abdallah, Robot Manipulator Control: Theory & Practice, Marcel
+            Dekker, Inc., NY, 2003.</li>
+            <li>P. M. Kebria, S. Al-wais, H. Abdi, and S. Nahavandi, "Kinematic and dynamic modelling of UR5
+            manipulator," in Proc. IEEE Int. Conf. Syst., Man, Cybern., 2016, pp. 4229-4234.</li>
+            <li>K. Kufieta, Force Estimation in Robotic Manipulators: Modeling, Simulation and Experiments, UR5
+            as a case study, Thesis, Norwegian University of Science and Technology, 2014.</li>
+            <li>M. R. P. Ragazzon, Robot Manipulator Collision Handling in Unknown Environment without using
+            External Sensors, Specialization Project, Norwegian University of Science and Technology, 2012.</li>
+            <li>K. P. Hawkins, Analytic inverse kinematics for the universal robots, Technical report, Georgia Institute
+            of Technology Publications, 2013.</li>
+            <li>R. S. Andersen, Kinematics of a UR5, Technical report, Aalborg University, 2018.</li>
+            <li>D. Guo, F. Xu, and L. Yan, "New pseudoinverse-based path-planning scheme with PID characteristic
+            for redundant robot manipulators in the presence of noise," IEEE Trans. Control Syst. Technol., vol.
+            26, no. 6, pp. 2008-2019, 2018.</li>
+            <li>A. S. Deo and I. D. Walker, "Minimum effort inverse kinematics for redundant manipulators," IEEE
+            Trans. Robot. Autom., vol. 13, no. 5, pp. 767-775, 1997.</li>
+            <li>A. De Luca, L. Lanari, and G. Oriolo, "Control of redundant robots on cyclic trajectories," in Proc.
+            IEEE Int. Conf. Robot. Autom., 1992, pp. 500-506.</li>
+            <li>T. Shamir and Y. Yomdin, "Repeatability of redundant manipulators: Mathematical solution of the
+            problem," IEEE Trans. Autom. Control, vol. 33, no. 11, pp. 1004-1009, 1988.</li>
+            <li>S. Seereeram and J. T. Wen, "A Global Approach to Path Planning for Redundant Manipulators," in
+            IEEE Trans. Robot. & Autom., vol. 11, no. 1, pp. 152-159, 1995.</li>
+            <li>C. A. Klein and C.-H. Huang, "Review of pseudoinverse control for use with kinematically redundant
+            manipulators," IEEE Trans. Syst., Man, Cybern., vol. SMC-13, no. 2, pp. 245-250, 1983.</li>
+            <li>Y. Zhang and Z. Zhang, Repetitive Motion Planning and Control of Redundant Robot Manipulators,
+            Springer-Verlag, New York, 2013.</li>
+            21: T. Shamir, "The singularities of redundant robot arms," Int. J. Robot. Res., vol. 9, no. 1, pp. 113-121,
+            1990.</li>
+            <li>L. T. Dung, H-J. Kang, Y-S. Ro, "Robot manipulator modeling in MatlabSimmechanics with PD
+            control and online Gravity compensation," IEEE Int. Forum on Strategic Tech., pp. 446-449, 2010.</li>
+            <li>F. Piltan, M. H. Yarmahmoudi, M. Shamsodini, E. Mazlomian, A. Hosainpour, "PUMA-560 Robot
+            Manipulator Position Computed Torque Control Methods Using MATLAB/SIMULINK and their Integration
+            into Graduate Nonlinear Control and MATLAB Courses," Int. Journal of Robot. & Autom.
+            (IJRA), vol. 3, issue 3, pp. 167-191, 2012.</li>
+            </ol>
+      </td>
+    </tr>
+  </table>
+</span>
+
+</body>
